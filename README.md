@@ -1,38 +1,11 @@
-<p align="center">
-  <img src="assets/scribd.svg" alt="Scribd" width="200">
-</p>
+## Introduction
+Fork of [this](https://github.com/themrsami/scribd-downloader) repository
 
-<h1 align="center">Scribd Downloader</h1>
-
-<p align="center">
-  <b>Download Scribd documents as PDF for free - Fast, automated, and runs in background!</b>
-</p>
-
-<p align="center">
-  <a href="https://www.python.org/downloads/">
-    <img src="https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+">
-  </a>
-  <a href="https://pypi.org/project/selenium/">
-    <img src="https://img.shields.io/badge/Selenium-4.0+-green?style=for-the-badge&logo=selenium&logoColor=white" alt="Selenium 4.0+">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" alt="MIT License">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://buymeacoffee.com/mrsami">
-    <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee">
-  </a>
-  <a href="https://github.com/sponsors/fullstackusama">
-    <img src="https://img.shields.io/badge/Sponsor-ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors">
-  </a>
-  <a href="https://github.com/fullstackusama/scribd-downloader/stargazers">
-    <img src="https://img.shields.io/github/stars/fullstackusama/scribd-downloader?style=for-the-badge&logo=github" alt="GitHub Stars">
-  </a>
-</p>
-
----
+Changes:
+- Nix Flake: script is packaged with Nix Flake containing all dependencies including Chromium and chromedriver, all binaries (eg. selenium) are referenced via the Nix system path within script, ensuring compatiility
+- Auto setup of python venv for easy use
+- Script takes arguments as opposed to input for url
+- File path specification
 
 ## Features
 
@@ -50,11 +23,16 @@
 - **Auto filename** - PDF named after the document URL automatically
 - **No login required** - Works without Scribd account
 
+## Roadmap
+Future features that may be implemented in the future
+- Bulk file processing (multiple pdfs)
+- API for remotely processing multiple PDFs at once and saving to remote server
 ---
 
 ## Requirements
 
-[Nix](https://nixos.org/)
+- [Nix](https://nixos.org/)
+
 ---
 
 ## Installation
@@ -79,9 +57,9 @@
 
 1. **Run the script**
    ```bash
-   python scribd-downloader.py <url>
+   python scribd-downloader.py <url> [destination]
    ```
-
+   Usage: set url to the url of the scribd pdf, and destination to either the desired filename or desired absolute path.
 
 2. **Wait for the download** - The script will:
    - Open the document in headless Chrome
@@ -97,11 +75,12 @@
 
 ## Example Output
 
-```text
-$ python scribd-downloader.py https://www.scribd.com/document/903361807/WorkdaySimpleIntegrations-EIB-31v2
+(with filepath)
 
-Link embed: https://www.scribd.com/embeds/903361807/content
-Output filename: WorkdaySimpleIntegrations-EIB-31v2.pdf
+```text
+python scribd-downloader.py https://www.scribd.com/document/257922065/Cpp-Basic-Syntax /home/blau/test.pdf
+Link embed: https://www.scribd.com/embeds/257922065/content
+Output filename: /home/blau/test.pdf
 
 Starting Chrome browser...
 Cookie dialogs hidden.
@@ -110,18 +89,58 @@ Bottom toolbar removed.
 Adjusted 1 scroll containers for print.
 Print CSS injected.
 
-Saving PDF as: WorkdaySimpleIntegrations-EIB-31v2.pdf
+Saving PDF as: /home/blau/test.pdf
   Export mode: Individual document pages
   Margins: None
   Headers/Footers: Disabled
   ChromeDriver command timeout: 600s
-Exporting 316 document pages in bounded batches of 8...
-  Loading page batch 1-8/316...
-  Page 1/316 1002x1296px -> 10.438"x13.500"
+Exporting 4 document pages in bounded batches of 8...
+  Loading page batch 1-4/4...
+  Page 1/4 1002x1417px -> 10.438"x14.760"
     OK: exactly 1 PDF sheet
-  ...
-Merging 316 disk-spooled PDF pages...
-PDF saved successfully to: C:\Users\...\WorkdaySimpleIntegrations-EIB-31v2.pdf
+  Page 2/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+  Page 3/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+  Page 4/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+Merging 4 disk-spooled PDF pages...
+PDF saved successfully to: /home/blau/test.pdf
+Browser closed.
+```
+## Example 2
+
+without filepath
+
+```text
+python scribd-downloader.py https://www.scribd.com/document/257922065/Cpp-Basic-Syntax
+Link embed: https://www.scribd.com/embeds/257922065/content
+Output filename: Cpp-Basic-Syntax.pdf
+
+Starting Chrome browser...
+Cookie dialogs hidden.
+Top toolbar removed.
+Bottom toolbar removed.
+Adjusted 1 scroll containers for print.
+Print CSS injected.
+
+Saving PDF as: Cpp-Basic-Syntax.pdf
+  Export mode: Individual document pages
+  Margins: None
+  Headers/Footers: Disabled
+  ChromeDriver command timeout: 600s
+Exporting 4 document pages in bounded batches of 8...
+  Loading page batch 1-4/4...
+  Page 1/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+  Page 2/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+  Page 3/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+  Page 4/4 1002x1417px -> 10.438"x14.760"
+    OK: exactly 1 PDF sheet
+Merging 4 disk-spooled PDF pages...
+PDF saved successfully to: /home/blau/scribd-downloader/Cpp-Basic-Syntax.pdf
 Browser closed.
 ```
 

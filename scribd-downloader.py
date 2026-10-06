@@ -20,6 +20,7 @@ import re
 import tempfile
 import time
 import sys
+import pathvalidate as pv
 from io import BytesIO
 from urllib.parse import unquote, urlparse
 
@@ -1259,17 +1260,25 @@ def save_pdf_pages_individually(
         spool.cleanup()
 
     return os.path.abspath(filename)
-
+def validate_input_path(path):
+    """Validate if path is valid path or filename"""
+    check = pv.is_valid_filename(path) or pv.is_valid_filepath(path, platform="Linux")
+    return check
 def main():
     """Run the exporter interactively."""
     #input_url = input("Input link Scribd: ").strip()
-    if len(sys.argv) != 2:
-        print("Usage ./scribd-downloader.py <url>")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("Usage ./scribd-downloader.py <url> {dest}")
         sys.exit(1)
     input_url = sys.argv[1]
-        
+    try:
+        pdf_filename = sys.argv[2]
+        if not validate_input_path(pdf_filename):
+            raise ValueError 
+    except:
+        pdf_filename = get_filename_from_url(input_url)
     converted_url = convert_scribd_link(input_url)
-    pdf_filename = get_filename_from_url(input_url)
+
 
     print(f"Link embed: {converted_url}")
     print(f"Output filename: {pdf_filename}")
