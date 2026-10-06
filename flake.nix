@@ -17,7 +17,8 @@
 						chromedriver
 					];
 					shellHook = ''
-						source ./.venv/bin/activate
+						sh start.sh 
+						source .venv/bin/activate
 						export UV_PYTHON="$(command -v python3.13)"
 						export SCRIBD_CHROMIUM_BINARY="${pkgs.chromium}/bin/chromium"
 						export SE_CHROMEDRIVER="${pkgs.chromedriver}/bin/chromedriver"

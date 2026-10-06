@@ -54,10 +54,7 @@
 
 ## Requirements
 
-- Python 3.10 or higher
-- Google Chrome browser installed
-- Chrome WebDriver (auto-managed by Selenium)
-
+[Nix](https://nixos.org/)
 ---
 
 ## Installation
@@ -67,8 +64,11 @@
    git clone https://github.com/fullstackusama/scribd-downloader.git
    cd scribd-downloader
    ```
-
-2. **Install dependencies**
+2. **Run Nix Flake**
+    ```bash
+    nix develop
+    ```
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
@@ -79,20 +79,11 @@
 
 1. **Run the script**
    ```bash
-   python scribd-downloader.py
+   python scribd-downloader.py <url>
    ```
 
-2. **Paste the Scribd document URL** when prompted:
-   ```
-   Input link Scribd: https://www.scribd.com/document/123456789/Document-Title
-   ```
 
-   Legacy Scribd URLs also work:
-   ```
-   Input link Scribd: https://www.scribd.com/doc/123456789/Document-Title
-   ```
-
-3. **Wait for the download** - The script will:
+2. **Wait for the download** - The script will:
    - Open the document in headless Chrome
    - Load document pages directly in bounded batches
    - Release each batch from Chrome after printing to control memory use
@@ -100,15 +91,14 @@
    - Spool individual pages to temporary storage and merge the final PDF
    - Save the PDF in the current directory
 
-4. **Done!** Your PDF will be saved with the document name from the URL.
+3. **Done!** Your PDF will be saved with the document name from the URL.
 
 ---
 
 ## Example Output
 
 ```text
-$ python scribd-downloader.py
-Input link Scribd: https://www.scribd.com/document/903361807/WorkdaySimpleIntegrations-EIB-31v2
+$ python scribd-downloader.py https://www.scribd.com/document/903361807/WorkdaySimpleIntegrations-EIB-31v2
 
 Link embed: https://www.scribd.com/embeds/903361807/content
 Output filename: WorkdaySimpleIntegrations-EIB-31v2.pdf
