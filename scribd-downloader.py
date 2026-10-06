@@ -19,12 +19,14 @@ import os
 import re
 import tempfile
 import time
+import sys
 from io import BytesIO
 from urllib.parse import unquote, urlparse
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 
 DEFAULT_CDP_TIMEOUT_SECONDS = int(os.getenv("SCRIBD_CDP_TIMEOUT", "600"))
@@ -57,6 +59,9 @@ DEFAULT_PAPER_HEIGHT_INCHES = 10.5
 def build_chrome_options(runtime_profile_dir):
     """Create Chrome options for reliable headless PDF generation."""
     options = Options()
+    options.binary_location = get_required_browser_path(
+        "SCRIBD_CHROMIUM_BINARY"
+    )
 
     if HEADLESS_ENABLED:
         options.add_argument("--headless=new")
@@ -73,6 +78,23 @@ def build_chrome_options(runtime_profile_dir):
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
     return options
+
+
+def get_required_browser_path(variable_name):
+    """Get a browser component path set by the Nix development shell."""
+    path = os.getenv(variable_name)
+    if not path:
+        raise RuntimeError(
+            f"{variable_name} is not set. Run this program with nix develop."
+        )
+    return path
+
+
+def build_chrome_service():
+    """Create a service that uses the ChromeDriver from the Nix shell."""
+    return Service(
+        executable_path=get_required_browser_path("SE_CHROMEDRIVER")
+    )
 
 
 def convert_scribd_link(url):
@@ -1240,8 +1262,12 @@ def save_pdf_pages_individually(
 
 def main():
     """Run the exporter interactively."""
-    input_url = input("Input link Scribd: ").strip()
-
+    #input_url = input("Input link Scribd: ").strip()
+    if len(sys.argv) != 2:
+        print("Usage ./scribd-downloader.py <url>")
+        sys.exit(1)
+    input_url = sys.argv[1]
+        
     converted_url = convert_scribd_link(input_url)
     pdf_filename = get_filename_from_url(input_url)
 
@@ -1275,6 +1301,7 @@ def main():
             )
 
             driver = webdriver.Chrome(
+                service=build_chrome_service(),
                 options=options
             )
 
